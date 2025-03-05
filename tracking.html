@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .tracking-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="tracking-container">
+        <h2>Order Tracking</h2>
+        <input type="text" id="orderId" placeholder="Enter Order ID">
+        <button id="checkStatusBtn">Check Order Status</button>
+        <p id="orderStatus" class="status"></p>
+    </div>
+    <script>
+        document.getElementById('checkStatusBtn').addEventListener('click', async function() {
+            const orderId = document.getElementById('orderId').value.trim();
+            if (orderId === "") {
+                alert("Please enter an Order ID.");
+                return;
+            }
+            const statuses = ["Processing", "Picked Up", "In Transit", "Out for Delivery", "Delivered"];
+            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+        
+            document.getElementById('orderStatus').innerText = "Status: " + randomStatus;
+            document.getElementById('orderStatus').style.display = "block";
+            
+            this.disabled = true;
+            try {
+                await fetch("http://localhost:3000/save-order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ orderId, status: randomStatus })
+                });
+            } catch (error) {
+                console.error("Error saving order:", error);
+            }
+        });        
+    </script>
+</body>
+</html>
